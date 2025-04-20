@@ -6,6 +6,8 @@ title: "Tutorial 6: Refactoring R Code"
 
 In this tutorial, you will refactor the code into separate scripts corresponding to each section. The dataset we will use comes from the `palmerpenguins` package, which contains measurements of penguins from three species.
 
+The R programming language (R Core Team, 2019)  and the following R packages were used to perform the analysis:  knitr (Xie 2014), tidyverse (Wickham 2017), and Quarto (Allaire et al 2022).  *Note: this report is adapted from Timbers (2020).*
+
 ## Load Libraries and Data
 
 ```{r}
@@ -13,6 +15,7 @@ In this tutorial, you will refactor the code into separate scripts corresponding
 library(tidyverse)
 library(palmerpenguins)
 library(tidymodels)
+library(regexcite20250416) # REPLACE WITH OWN LIBRARY
 
 data <- penguins
 
@@ -27,7 +30,8 @@ In this section, we perform exploratory data analysis (EDA) and prepare the data
 ```{r}
 # Summary statistics
 glimpse(data)
-summarise(data, mean_bill_length = mean(bill_length_mm), mean_bill_depth = mean(bill_depth_mm))
+summary <- dplyr::summarise(data, mean_bill_length = mean(bill_length_mm), mean_bill_depth = mean(bill_depth_mm), mean_flipper_length = mean(flipper_length_mm), mean_body_mass = mean(body_mass_g))
+
 
 # Visualizations
 ggplot(data, aes(x = species, y = bill_length_mm, fill = species)) +
@@ -79,6 +83,34 @@ conf_mat <- conf_mat(predictions, truth = species, estimate = .pred_class)
 conf_mat
 ```
 
+## Libraries Run
+
+Test the usage of packages in the report.
+
+```{r}
+# Explicit namespace use
+calls <- c("regexcite20250416::is_leap(2000)", 
+           "regexcite20250416::is_leap(1900)", 
+           "regexcite20250416::temp_conv(41, 'F', 'C')")
+
+# Evaluate each safely
+outputs <- sapply(calls, function(call) {
+  tryCatch({
+    eval(parse(text = call))
+  }, error = function(e) {
+    paste("Error:", e$message)
+  })
+})
+
+# Create dataframe
+func_outputs <- data.frame(
+  Function = calls,
+  Output = outputs,
+  stringsAsFactors = FALSE
+)
+func_outputs
+```
+
 # Conclusion
 
 In this tutorial, we:
@@ -87,3 +119,5 @@ In this tutorial, we:
 - Performed exploratory data analysis.
 - Built a k-Nearest Neighbors classification model using `tidymodels`.
 - Evaluated the model's performance.
+
+# References
