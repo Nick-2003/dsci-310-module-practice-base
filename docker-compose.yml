@@ -1,7 +1,7 @@
 services: # These are the containers I want you to run
   analysis-env: # When system loads up, can refer this particular container as analysis-env; otherwise will randomly use 2 words to name it 
     # image: rocker/rstudio:4.4.2 # tidyverse will not work as it is not built fot ARM 
-    image: nt2103/dsci310practice2 # TO BE CHANGED
+    image: nt2103/dsci310practice3 # TO BE CHANGED
     ports: 
       - "8787:8787" # Default port; link to port 8787 of the container to port 8787 of the host
     volumes: # To mount
