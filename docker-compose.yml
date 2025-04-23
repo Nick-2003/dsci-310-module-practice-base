@@ -6,7 +6,13 @@ services: # These are the containers I want you to run
       - "8787:8787" # Default port; link to port 8787 of the container to port 8787 of the host
     volumes: # To mount
       # - /$(pwd):/home/rstudio/workspace # Runs in BASH
-      - ".:/home/rstudio/work" # links to directory named "work"; /home/rstudio kept to avoid overwriting original home directory; . refers to the current directory; docker can translate between operating systems, so . can work
+      # - ".:/home/rstudio/work" # links to directory named "work"; /home/rstudio kept to avoid overwriting original home directory; . refers to the current directory; docker can translate between operating systems, so . can work
+      - "./Makefile:/home/rstudio/Makefile"
+      - "./data:/home/rstudio/work/data"
+      - "./src:/home/rstudio/work/src"
+      - "./output:/home/rstudio/work/output"
+      - "./reports:/home/rstudio/work/reports"
+      - "./docs:/home/rstudio/work/docs"
     environment: 
       # PASSWORD: "abcd" # Set password to password; not great to keep ACTUAL PASSWORD here
       DISABLE_AUTH: true
