@@ -15,7 +15,6 @@ The R programming language (R Core Team, 2019)  and the following R packages wer
 library(tidyverse)
 library(palmerpenguins)
 library(tidymodels)
-library(regexcite20250416) # REPLACE WITH OWN LIBRARY
 
 data <- penguins
 
@@ -88,10 +87,76 @@ conf_mat
 Test the usage of packages in the report.
 
 ```{r}
+is_leap <- function(year) {
+  if (year <= 0 || year %% 1 != 0) {
+    return(stop()) # Throw error if year is 0 or less
+  } else if (year %% 4 == 0 && year %% 100 != 0 || year %% 400 == 0) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+```
+
+```{r}
+temp_conv <- function(temp, start_scale, end_scale) {
+  if (!(start_scale %in% c("F", "C", "K")) ||
+        !(end_scale %in% c("F", "C", "K"))) {
+    stop("Invalid start or end scale.")
+  } else if (!is.numeric(temp)) {
+    stop("Invalid temperature value.")
+  } else if ((temp < 0 && start_scale == "K") || (temp < -273.15 && start_scale == "C") || (temp < -459.67 && start_scale == "F")) {
+    stop("Invalid temperature.")
+  }
+  # stopifnot((start_scale %in% c("F", "C", "K")), !(end_scale %in% c("F", "C", "K")), 
+  #           is.numeric(temp),
+  #           (temp >= 0 && start_scale == "K") || (temp >= -273.15 && start_scale == "C") || (temp >= -459.67 && start_scale == "F"))
+
+
+  if (start_scale == end_scale) {
+    return(temp)
+  }
+
+  if (start_scale == "F") {
+    if (end_scale == "C") {
+      result <- (temp - 32) * (5 / 9)
+    } else if (end_scale == "K") {
+      result <- ((temp - 32) * (5 / 9)) + 273.15
+    }
+  } else if (start_scale == "C") {
+    if (end_scale == "F") {
+      result <- (temp * (9 / 5)) + 32
+    } else if (end_scale == "K") {
+      result <- temp + 273.15
+    }
+  } else if (start_scale == "K") {
+    if (end_scale == "F") {
+      result <- ((temp - 273.15) * (9 / 5)) + 32
+    } else if (end_scale == "C") {
+      result <- temp - 273.15
+    }
+  }
+
+  return(result)
+}
+```
+
+```{r}
+str_split_one <- function(string, pattern, n = Inf) {
+  stopifnot(is.character(string), length(string) <= 1)
+  if (length(string) == 1) {
+    stringr::str_split(string = string, pattern = pattern, n = n)[[1]]
+  } else {
+    character()
+  }
+}
+```
+
+```{r}
 # Explicit namespace use
-calls <- c("regexcite20250416::is_leap(2000)", 
-           "regexcite20250416::is_leap(1900)", 
-           "regexcite20250416::temp_conv(41, 'F', 'C')")
+calls <- c("is_leap(2000)",
+           "temp_conv(41, 'F', 'C')",
+           "str_split_one('a,b,c', ',')")
 
 # Evaluate each safely
 outputs <- sapply(calls, function(call) {
